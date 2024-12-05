@@ -8,17 +8,17 @@ class BaseModel(Model):
     class Meta:
         database = db
 
-class User_tb(BaseModel):
+class User_tb(Model):
     user_id = IntegerField()
     username = CharField()
     age = IntegerField()
    
-class Task_tb(BaseModel):
+class Task_tb(Model):
     user_id = IntegerField()
     task_name = CharField()
     task_content = CharField()
 
-class Physical_tb(BaseModel):
+class Physical_tb(Model):
     user_id = IntegerField()
     temp = DoubleField()
     bad_good = BooleanField(default=True)
