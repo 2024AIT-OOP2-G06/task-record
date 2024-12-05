@@ -16,5 +16,14 @@ for blueprint in blueprints:
 def index():
     return render_template('index.html')
 
+@app.route('/user')
+def user():
+    return render_template('user.html')
+
+@app.route('/user/touroku')
+def touroku():
+    return render_template('touroku.html')
+
 if __name__ == '__main__':
     app.run(port=8080, debug=True)
+
