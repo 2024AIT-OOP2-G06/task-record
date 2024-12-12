@@ -8,7 +8,11 @@ __pycache__/
 .DS_Store
 
 # 作成されるSQLiteデータベースのファイル
+<<<<<<< Updated upstream
 
+=======
+#.db
+>>>>>>> Stashed changes
 
 # C extensions
 *.so
