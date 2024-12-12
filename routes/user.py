@@ -31,6 +31,11 @@ def add():
         # db.close()
         # return redirect(url_for('user.list'))
         User.create(username=username, age=age)
+
+        # JSONファイルを更新
+        from routes.circle import export_json
+        export_json()
+
         return redirect('/users/')
     
     return render_template('user_add.html')
@@ -46,6 +51,11 @@ def edit(user_id):
         user.username = request.form['username']
         user.age = request.form['age']
         user.save()
+
+        # JSONファイルを更新
+        from routes.circle import export_json
+        export_json()
+
         return redirect(url_for('user.list'))
 
     return render_template('user_edit.html', user=user)
