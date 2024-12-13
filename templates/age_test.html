@@ -1,0 +1,93 @@
+<!--http://127.0.0.1:8080/users/chart-->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>年齢</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='base-style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>年齢の円グラフ</h1>
+    <canvas id="myPieChart"></canvas>
+    <button id="randomizeBtn">ランダムデータに変更</button>
+
+    <script>
+        const ctx = document.getElementById('myPieChart').getContext('2d');
+        let pieChart;
+
+        // サーバーからデータを取得し、グラフを描画
+        const fetchDataAndRenderChart = () => {
+            fetch('/users/data')  // 修正：/users/data に変更
+                .then(response => response.json())
+                .then(data => {
+                    const labels = data.map(item => `${item.user} (ID: ${item.id})`);
+                    const age = data.map(item => item.age);
+
+                    // グラフがすでに作成されている場合、更新する
+                    if (pieChart) {
+                        pieChart.data.labels = labels;  // ラベルを更新
+                        pieChart.data.datasets[0].data = age;  // データを更新
+                        pieChart.update();  // グラフを再描画
+                    } else {
+                        // 新しいグラフを作成
+                        pieChart = new Chart(ctx, {
+                            type: 'pie',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    data: age,
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 0.6)',
+                                        'rgba(54, 162, 235, 0.6)',
+                                        'rgba(255, 206, 86, 0.6)',
+                                        'rgba(75, 192, 192, 0.6)',
+                                        'rgba(153, 102, 255, 0.6)',
+                                        'rgba(255, 159, 64, 0.6)'
+                                    ],
+                                    borderColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)',
+                                        'rgba(255, 159, 64, 1)'
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        position: 'top',
+                                    },
+                                    tooltip: {
+                                        enabled: true
+                                    }
+                                }
+                            }
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('データ取得エラー:', error);
+                });
+        };
+
+        // ランダムデータに変更ボタンの処理
+        document.getElementById('randomizeBtn').addEventListener('click', () => {
+            if (pieChart) {
+                // ランダムデータを生成
+                const randomData = Array.from({ length: pieChart.data.labels.length }, () => Math.floor(Math.random() * 100));
+                pieChart.data.datasets[0].data = randomData;  // ランダムデータをグラフに設定
+                pieChart.update();  // グラフを再描画
+            }
+        });
+
+        // 初期データを取得してグラフを描画
+        fetchDataAndRenderChart();
+    </script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for,jsonify
 from models import User
 
 # Blueprintの作成
@@ -59,3 +59,24 @@ def edit(user_id):
         return redirect(url_for('user.list'))
 
     return render_template('user_edit.html', user=user)
+
+# データ一覧（確認用）
+# データベースから取得したデータを JSON 形式で返す
+@user_bp.route('/data', methods=['GET'])
+def get_age_data():
+    users = User.select()
+    data = [
+        {
+            "user": user.username,  # ユーザー名
+            "age": int(user.age),   # 体温(float型に変換)
+            "id": user.id               # 体温ID(横軸になる)
+        }
+        for user in users
+    ]
+    return jsonify(data)
+
+@user_bp.route('/chart', methods=['GET'])
+def show_chart():
+    users = User.select()
+    chart_data = [{"user": user.username, "age": user.age} for user in users]
+    return render_template('age_test.html', title='年齢グラフ', chart_data=chart_data)
