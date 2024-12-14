@@ -68,7 +68,7 @@ def get_age_data():
     data = [
         {
             "user": user.username,  # ユーザー名
-            "age": int(user.age),   # 体温(float型に変換)
+            "age": user.age,   # 体温(float型に変換)
             "id": user.id               # 体温ID(横軸になる)
         }
         for user in users

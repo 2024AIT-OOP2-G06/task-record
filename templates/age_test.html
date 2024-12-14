@@ -19,7 +19,7 @@
 
         // サーバーからデータを取得し、グラフを描画
         const fetchDataAndRenderChart = () => {
-            fetch('/users/data')  // 修正：/users/data に変更
+            fetch('/users/data')  
                 .then(response => response.json())
                 .then(data => {
                     const labels = data.map(item => `${item.user} (ID: ${item.id})`);
