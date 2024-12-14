@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>円グラフ</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <h1>年齢の円グラフ</h1>
+    <div>
+      <canvas id="myChart"></canvas>
+    </div>
+    <script>
+      // JSONファイルを読み込む
+      fetch("{{url_for('static',filename='age.json')}}") // Pythonで生成したJSONファイルのパス
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("JSONファイルの読み込みに失敗しました");
+          }
+          return response.json(); // JSONデータを解析
+        })
+        .then((ages) => {
+          // ラベルを生成
+          const labels = ages.map((age, index) => `Age ${age}`);
+          console.log(labels);
+          // Chart.jsで円グラフを描画
+          const ctx = document.getElementById("myChart");
+          new Chart(ctx, {
+            type: "pie", // 円グラフ
+            data: {
+              labels: labels, // 加工したラベル
+              datasets: [
+                {
+                  data: ages, // 元のデータをそのまま使用
+                  borderWidth: 1,
+                },
+              ],
+            },
+          });
+        });
+    </script>
+  </body>
+</html>

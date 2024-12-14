@@ -49,3 +49,7 @@ def edit(user_id):
         return redirect(url_for('user.list'))
 
     return render_template('user_edit.html', user=user)
+
+@user_bp.route("/test")
+def test():
+    return render_template("age_test.html")
