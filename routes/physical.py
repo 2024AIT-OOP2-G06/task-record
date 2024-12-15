@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, jsonify
 from models import Physical, User
 
 # Blueprintの作成
@@ -41,3 +41,25 @@ def edit(physical_id):
 
     users = User.select()
     return render_template('physical_edit.html', physical=physical, users=users)
+
+
+# データ一覧（確認用）
+# データベースから取得したデータを JSON 形式で返す
+@physical_bp.route('/data', methods=['GET'])
+def get_temperature_data():
+    physicals = Physical.select()
+    data = [
+        {
+            "user": physical.user.username,  # ユーザー名
+            "temp": float(physical.temp),   # 体温(float型に変換)
+            "id": physical.id               # 体温ID(横軸になる)
+        }
+        for physical in physicals
+    ]
+    return jsonify(data)
+
+
+# グラフ表示
+@physical_bp.route('/chart', methods=['GET'])
+def show_chart():
+    return render_template('temp_chart.html', title='体温グラフ')
