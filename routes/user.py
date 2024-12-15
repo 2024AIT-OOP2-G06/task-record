@@ -60,6 +60,10 @@ def edit(user_id):
 
     return render_template('user_edit.html', user=user)
 
+@user_bp.route("/test")
+def test():
+    return render_template("age_test.html")
+
 # データ一覧（確認用）
 # データベースから取得したデータを JSON 形式で返す
 @user_bp.route('/data', methods=['GET'])
