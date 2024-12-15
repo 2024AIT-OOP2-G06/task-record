@@ -68,13 +68,9 @@ def get_age_data():
     data = [
         {
             "user": user.username,  # ユーザー名
-<<<<<<< Updated upstream
             "age": int(user.age),   # 体温(float型に変換)
             "id": user.id               # 体温ID(横軸になる)
-=======
-            "age": user.age,   # 年齢
-            "id": user.id               # ID
->>>>>>> Stashed changes
+
         }
         for user in users
     ]
