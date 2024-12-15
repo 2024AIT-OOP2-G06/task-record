@@ -13,49 +13,87 @@
         <li><a href="{{ url_for('index') }}">HOME</a></li>
         <li><a href="{{ url_for('physical.list') }}">アンケート一覧</a></li>
     </ul>
-    <!-- ここにユーザーを選択するボタンを追加 -->
+    <!-- ユーザーを選択 -->
+    <form action="{{ url_for('physical.show_chart') }}" method="post">
+        <label>ユーザー: 
+            <select name="user_id" required>
+                {% for user in users %}
+                    <option value="{{ user.id }}" {% if user.username == username %}selected{% endif %}>
+                        {{ user.username }}
+                    </option>
+                {% endfor %}
+            </select>
+        </label>
+        <button type="submit">グラフを表示</button>
+    </form>
      
     <canvas id="tempChart" height="200" width="400"></canvas>
     <script>
+        // サーバー側から渡された username を JavaScript で利用可能にする
+        const username = "{{ username|default('', true) }}";
+
         // APIからデータを取得してグラフを作成
         fetch('/physicals/data')
             .then(response => response.json())
             .then(data => {  // JSON形式の文字列をJavaScriptで使えるように変換
-                const labels = data.map(item => `${item.user} (ID: ${item.id})`);
-                const temperatures = data.map(item => item.temp);  // 体温データのリストを生成
+                if (username) {  // ユーザー名が選択されている場合
+                    // フィルタ: item.user が選択された username と一致するデータ
+                    const filteredData = data.filter(item => item.user === username);
 
-                // グラフの描画(Chart.jsを使用)
-                const ctx = document.getElementById('tempChart').getContext('2d'); // グラフが描画されるキャンバス要素取得、2D描画
-                new Chart(ctx, { // 指定したコンテキスト(ctx)にグラフを描画
-                    type: 'line',
-                    data: {
-                        labels: labels, // X軸ラベル
-                        datasets: [{
-                            label: '体温 (℃)',
-                            data: temperatures, // 体温データ
-                            borderColor: 'rgba(0, 128, 255, 1)',
-                            backgroundColor: 'rgba(0, 128, 255, 0.5)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        scales: { // グラフの「軸」に関する設定
-                            y: {
-                                beginAtZero: false, // Y軸の目盛りを「0」から始める
-                                title: {
-                                    display: true, // 軸のタイトルを表示するかどうか
-                                    text: '体温 (℃)'
-                                }
-                            },
-                            x: {
-                                title: {
-                                    display: false,
+                    if (filteredData.length > 0) {
+                        // フィルタリングしたデータからX軸（id）とY軸（temp）データを作成
+                        const labels = filteredData.map(item => `ID: ${item.id}`);
+                        const temperatures = filteredData.map(item => item.temp); // 体温データのリストを生成
+
+                        // グラフの描画(Chart.jsを使用)
+                        const ctx = document.getElementById('tempChart').getContext('2d'); // グラフが描画されるキャンバス要素取得、2D描画
+
+                        // 最大値と最小値の取得
+                        const maxValue = Math.max(...temperatures, 38.5);
+                        const minValue = Math.min(...temperatures, 35.5);
+
+                        new Chart(ctx, { // 指定したコンテキスト(ctx)にグラフを描画
+                        type: 'line',
+                        data: {
+                            labels: labels, // X軸ラベル
+                            datasets: [{
+                                label: `${username}さんの体温 (℃)`,
+                                data: temperatures, // 体温データ
+                                borderColor: 'rgba(0, 128, 255, 1)',
+                                backgroundColor: 'rgba(0, 128, 255, 0.5)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: { // グラフの「軸」に関する設定
+                                y: {
+                                    beginAtZero: false, // Y軸の目盛りを「0」から始める
+                                    min: minValue !== undefined ? Math.max(minValue, 35.5) : 35.5, // 最小値の初期設定
+                                    max: maxValue !== undefined ? Math.max(maxValue, 38.5) : 38.5, // 最大値の初期設定
+                                    title: {
+                                        display: true, // 軸のタイトルを表示するかどうか
+                                        text: '体温 (℃)'
+                                    }
+                                },
+                                x: {
+                                    title: {
+                                        display: false,
+                                    }
                                 }
                             }
                         }
-                    }
-                });
-            });
+                    });
+                } else {
+                    alert('該当するデータが見つかりませんでした');
+                }
+            } else {
+            alert('ユーザーが選択されていません');
+            }
+        })
+        .catch(error => {
+            console.error('データ取得エラー:', error);
+            alert('データの取得に失敗しました');
+        });
     </script>
 </body>
 </html>
