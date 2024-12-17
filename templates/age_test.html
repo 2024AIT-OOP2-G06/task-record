@@ -1,11 +1,5 @@
-<!DOCTYPE html>
-<html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <title>円グラフ</title>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  </head>
-  <body>
     <h1>年齢の円グラフ</h1>
     <div>
       <canvas id="myChart"></canvas>
@@ -36,6 +30,10 @@
                 },
               ],
             },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+            }
           });
         });
     </script>
