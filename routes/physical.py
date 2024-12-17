@@ -52,7 +52,7 @@ def get_temperature_data():
         {
             "user": physical.user.username,  # ユーザー名
             "temp": float(physical.temp),   # 体温(float型に変換)
-            "id": physical.id               # 体温ID(横軸になる)
+            "id": physical.id               # ID(横軸になる)
         }
         for physical in physicals
     ]
@@ -60,6 +60,19 @@ def get_temperature_data():
 
 
 # グラフ表示
-@physical_bp.route('/chart', methods=['GET'])
+@physical_bp.route('/chart', methods=['GET', 'POST'])
 def show_chart():
-    return render_template('temp_chart.html', title='体温グラフ')
+    users = User.select()  # 全ユーザーを取得
+    username = None        # 選択されたユーザー名（初期値）
+
+    if request.method == 'POST':
+        # フォームから選択されたユーザーIDを取得
+        user_id = request.form.get('user_id')
+
+        # ユーザーIDに基づいてデータベースからユーザーを取得
+        selected_user = User.get_or_none(User.id == user_id)
+        if selected_user:
+            username = selected_user.username  # ユーザー名を取得
+
+    return render_template('temp_chart.html', users=users, username=username)
+
