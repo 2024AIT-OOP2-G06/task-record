@@ -1,0 +1,50 @@
+    <h3>業種別平均体温グラフ</h3>
+    <canvas id="averageTempChart" height="200" width="250"></canvas>
+    <script>
+        // APIからデータを取得して棒グラフを描画
+        fetch('/physicals/task_chart_data')
+            .then(response => response.json())
+            .then(data => {
+                // データからラベルと値を抽出
+                const labels = data.map(item => item.task);        // X軸: 業務種別
+                const values = data.map(item => item.avg_temp);    // Y軸: 平均体温
+
+                // グラフを描画
+                const ctx = document.getElementById('averageTempChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar', // 棒グラフ
+                    data: {
+                        labels: labels, // X軸ラベル
+                        datasets: [{
+                            label: '業務別平均体温 (℃)',
+                            data: values, // 平均体温の値
+                            barThickness: 30, // 棒の太さを固定 (単位: ピクセル)
+                            backgroundColor: 'rgba(0, 128, 255, 0.5)',
+                            borderColor: 'rgba(0, 128, 255, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: false, // Y軸は0から始めない
+                                title: {
+                                    display: true,
+                                    text: '平均体温 (℃)'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: '業務種'
+                                }
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('データ取得エラー:', error);
+                alert('データの取得に失敗しました');
+            });
+    </script>

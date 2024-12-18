@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <h1>体温グラフ</h1>
+    <h3>体温グラフ</h3>
     <ul class="breadcrumb">
         <li><a href="{{ url_for('index') }}">HOME</a></li>
         <li><a href="{{ url_for('physical.list') }}">アンケート一覧</a></li>
@@ -41,9 +41,13 @@
                     const filteredData = data.filter(item => item.user === username);
 
                     if (filteredData.length > 0) {
-                        // フィルタリングしたデータからX軸（id）とY軸（temp）データを作成
-                        const labels = filteredData.map(item => `ID: ${item.id}`);
+                        // フィルタリングしたデータからX軸（task）とY軸（temp）データを作成
+                        const labels = filteredData.map(item => item.bad_content); // 体調データのリストを生成
                         const temperatures = filteredData.map(item => item.temp); // 体温データのリストを生成
+
+                        // データセットに対応する点の色を生成
+                        const pointBackgroundColors = filteredData.map(item => item.bad_good ? 'rgba(255, 0, 0, 0.5)' : 'rgba(0, 128, 255, 0.5)');
+                        const pointBorderColors = filteredData.map(item => item.bad_good ? 'rgba(255, 0, 0, 1)' : 'rgba(0, 128, 255, 1)');
 
                         // グラフの描画(Chart.jsを使用)
                         const ctx = document.getElementById('tempChart').getContext('2d'); // グラフが描画されるキャンバス要素取得、2D描画
@@ -51,7 +55,8 @@
                         // 最大値と最小値の取得
                         const maxValue = Math.max(...temperatures, 38.5);
                         const minValue = Math.min(...temperatures, 35.5);
-
+                        
+                        // グラフの描画
                         new Chart(ctx, { // 指定したコンテキスト(ctx)にグラフを描画
                         type: 'line',
                         data: {
@@ -59,9 +64,12 @@
                             datasets: [{
                                 label: `${username}さんの体温 (℃)`,
                                 data: temperatures, // 体温データ
-                                borderColor: 'rgba(0, 128, 255, 1)',
-                                backgroundColor: 'rgba(0, 128, 255, 0.5)',
-                                borderWidth: 1
+                                borderColor: 'rgba(0, 128, 255, 1)', // 折れ線の色
+                                backgroundColor: 'rgba(0, 128, 255, 0.5)', // 塗りつぶしの色
+                                borderWidth: 1,
+                                pointBackgroundColor: pointBackgroundColors, // 点の色（bad_good に基づく）
+                                pointBorderColor: pointBorderColors,         // 点の枠線の色
+                                pointRadius: 3,                              // 点の半径
                             }]
                         },
                         options: {
@@ -77,7 +85,7 @@
                                 },
                                 x: {
                                     title: {
-                                        display: false,
+                                        display: false
                                     }
                                 }
                             }
