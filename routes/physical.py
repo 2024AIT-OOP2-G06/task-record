@@ -3,10 +3,10 @@ from models import Physical, User, Task
 from peewee import fn
 
 # Blueprintの作成
-physical_bp = Blueprint('physical', __name__, url_prefix='/physicals')
+physical_bp = Blueprint('physical', __name__, url_prefix='/')
 
 
-@physical_bp.route('/')
+@physical_bp.route('/physicals')
 def list():
     physicals = Physical.select()
     return render_template('physical_list.html', title='アンケート一覧', items=physicals)
@@ -28,7 +28,7 @@ def add():
     return render_template('physical_add.html', users=users, tasks=tasks)
 
 
-@physical_bp.route('/edit/<int:physical_id>', methods=['GET', 'POST'])
+@physical_bp.route('/physicals/edit/<int:physical_id>', methods=['GET', 'POST'])
 def edit(physical_id):
     physical = Physical.get_or_none(Physical.id == physical_id)
     if not physical:
@@ -50,7 +50,7 @@ def edit(physical_id):
 
 # データ一覧 (temp_chart.html)
 # データベースから取得したデータを JSON 形式で返す
-@physical_bp.route('/temp_chart_data', methods=['GET'])
+@physical_bp.route('/physicals/temp_chart_data', methods=['GET'])
 def get_temperature_data():
     physicals = Physical.select()
     data = [
@@ -66,8 +66,8 @@ def get_temperature_data():
     return jsonify(data)
 
 
-# グラフ表示 (temp_chart.html)
-@physical_bp.route('/temp_chart', methods=['GET', 'POST'])
+# グラフ表示 (index.html)
+@physical_bp.route('/', methods=['GET', 'POST'])
 def show_chart():
     users = User.select()  # 全ユーザーを取得
     username = None        # 選択されたユーザー名（初期値）
@@ -81,11 +81,11 @@ def show_chart():
         if selected_user:
             username = selected_user.username  # ユーザー名を取得
 
-    return render_template('temp_chart.html', users=users, username=username)
+    return render_template('index.html', users=users, username=username)
 
 
 # データ一覧 (task_chart.html)
-@physical_bp.route('/task_chart_data', methods=['GET'])
+@physical_bp.route('/physicals/task_chart_data', methods=['GET'])
 def average_temp_by_task():
     # Peeweeのクエリで業務種別ごとの平均体温を計算
     query = (
@@ -102,9 +102,3 @@ def average_temp_by_task():
         } for result in query
     ]
     return jsonify(data)
-
-
-# グラフ表示 (task_chart.html)
-@physical_bp.route('/task_chart', methods=['GET'])
-def show_task_chart():
-    return render_template('task_chart.html')
