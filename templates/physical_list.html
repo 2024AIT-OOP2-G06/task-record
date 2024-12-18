@@ -21,6 +21,7 @@
                 <th>&nbsp;</th>
                 <th>ユーザー</th>
                 <th>体温</th>
+                <th>業務種</th>
                 <th>体調不良があるか</th>
                 <th>体調不良の内容</th>
             </tr>
@@ -31,6 +32,7 @@
                 <td><a href="{{ url_for('physical.edit', physical_id=physical.id) }}">編集</a></td>
                 <td>{{ physical.user.username }}</td>
                 <td>{{ "%.1f"|format(physical.temp) }}</td>
+                <td>{{ physical.task.task_name }}</td>
                 <td>{{ 'ある' if physical.bad_good else 'ない' }}</td>
                 <td>{{ physical.bad_content or '' }}</td>
             </tr>

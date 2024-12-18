@@ -7,6 +7,7 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='base-style.css') }}"
     />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
 
   <body>
@@ -18,6 +19,21 @@
       <li><a href="{{ url_for('task.list') }}">業務記録リスト</a></li>
       <li><a href="{{ url_for('physical.list') }}">体調管理アンケート</a></li>
     </ul>
-    {% include 'age_test.html' %}
+    
+    <div class="graphs-wrapper">
+      <!-- 年齢円グラフ -->
+      <div class="graph-container">
+        {% include 'age_test.html' %}
+      </div>
+      <!-- 業務別平均体温グラフ -->
+      <div class="graph-container">
+        {% include 'task_chart.html' %}
+      </div>
+    </div>
+    <div class="graph-container match-width">
+      <!-- 体温折れ線グラフ -->
+      
+    </div>
+
   </body>
 </html>

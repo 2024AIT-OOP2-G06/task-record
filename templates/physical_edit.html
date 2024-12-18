@@ -22,6 +22,13 @@
             </select>
         </label><br>
         <label>体温: <input type="text" step="0.1" name="temp" value="{{ physical.temp }}" required></label><br>
+        <label>業務種: 
+            <select name="task_id" required>
+                {% for task in tasks %}
+                    <option value="{{ task.id }}" {% if physical.task.id == task.id %}selected{% endif %}>{{ task.task_name }}</option>
+                {% endfor %}
+            </select>
+        </label><br>
         <label>体調不良があるか:</label>
         <label><input type="radio" name="bad_good" value="1" {% if physical.bad_good %}checked{% endif %}> ある</label>
         <label><input type="radio" name="bad_good" value="0" {% if not physical.bad_good %}checked{% endif %}> ない</label><br>
