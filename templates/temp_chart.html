@@ -1,12 +1,14 @@
 <!-- http://127.0.0.1:8080/physicals/chart -->
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <title>体温グラフ</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='base-style.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
     <h3>体温グラフ</h3>
     <ul class="breadcrumb">
@@ -15,18 +17,18 @@
     </ul>
     <!-- ユーザーを選択 -->
     <form action="{{ url_for('physical.show_chart') }}" method="post">
-        <label>ユーザー: 
+        <label>ユーザー:
             <select name="user_id" required>
                 {% for user in users %}
-                    <option value="{{ user.id }}" {% if user.username == username %}selected{% endif %}>
-                        {{ user.username }}
-                    </option>
+                <option value="{{ user.id }}" {% if user.username==username %}selected{% endif %}>
+                    {{ user.username }}
+                </option>
                 {% endfor %}
             </select>
         </label>
         <button type="submit">グラフを表示</button>
     </form>
-     
+
     <canvas id="tempChart" height="200" width="400"></canvas>
     <script>
         // サーバー側から渡された username を JavaScript で利用可能にする
@@ -55,53 +57,54 @@
                         // 最大値と最小値の取得
                         const maxValue = Math.max(...temperatures, 38.5);
                         const minValue = Math.min(...temperatures, 35.5);
-                        
+
                         // グラフの描画
                         new Chart(ctx, { // 指定したコンテキスト(ctx)にグラフを描画
-                        type: 'line',
-                        data: {
-                            labels: labels, // X軸ラベル
-                            datasets: [{
-                                label: `${username}さんの体温 (℃)`,
-                                data: temperatures, // 体温データ
-                                borderColor: 'rgba(0, 128, 255, 1)', // 折れ線の色
-                                backgroundColor: 'rgba(0, 128, 255, 0.5)', // 塗りつぶしの色
-                                borderWidth: 1,
-                                pointBackgroundColor: pointBackgroundColors, // 点の色（bad_good に基づく）
-                                pointBorderColor: pointBorderColors,         // 点の枠線の色
-                                pointRadius: 3,                              // 点の半径
-                            }]
-                        },
-                        options: {
-                            scales: { // グラフの「軸」に関する設定
-                                y: {
-                                    beginAtZero: false, // Y軸の目盛りを「0」から始める
-                                    min: minValue !== undefined ? Math.max(minValue, 35.5) : 35.5, // 最小値の初期設定
-                                    max: maxValue !== undefined ? Math.max(maxValue, 38.5) : 38.5, // 最大値の初期設定
-                                    title: {
-                                        display: true, // 軸のタイトルを表示するかどうか
-                                        text: '体温 (℃)'
-                                    }
-                                },
-                                x: {
-                                    title: {
-                                        display: false
+                            type: 'line',
+                            data: {
+                                labels: labels, // X軸ラベル
+                                datasets: [{
+                                    label: `${username}さんの体温 (℃)`,
+                                    data: temperatures, // 体温データ
+                                    borderColor: 'rgba(0, 128, 255, 1)', // 折れ線の色
+                                    backgroundColor: 'rgba(0, 128, 255, 0.5)', // 塗りつぶしの色
+                                    borderWidth: 1,
+                                    pointBackgroundColor: pointBackgroundColors, // 点の色（bad_good に基づく）
+                                    pointBorderColor: pointBorderColors,         // 点の枠線の色
+                                    pointRadius: 3,                              // 点の半径
+                                }]
+                            },
+                            options: {
+                                scales: { // グラフの「軸」に関する設定
+                                    y: {
+                                        beginAtZero: false, // Y軸の目盛りを「0」から始める
+                                        min: minValue !== undefined ? Math.max(minValue, 35.5) : 35.5, // 最小値の初期設定
+                                        max: maxValue !== undefined ? Math.max(maxValue, 38.5) : 38.5, // 最大値の初期設定
+                                        title: {
+                                            display: true, // 軸のタイトルを表示するかどうか
+                                            text: '体温 (℃)'
+                                        }
+                                    },
+                                    x: {
+                                        title: {
+                                            display: false
+                                        }
                                     }
                                 }
                             }
-                        }
-                    });
+                        });
+                    } else {
+                        alert('該当するデータが見つかりませんでした');
+                    }
                 } else {
-                    alert('該当するデータが見つかりませんでした');
+                    alert('ユーザーが選択されていません');
                 }
-            } else {
-            alert('ユーザーが選択されていません');
-            }
-        })
-        .catch(error => {
-            console.error('データ取得エラー:', error);
-            alert('データの取得に失敗しました');
-        });
+            })
+            .catch(error => {
+                console.error('データ取得エラー:', error);
+                alert('データの取得に失敗しました');
+            });
     </script>
 </body>
+
 </html>

@@ -1,39 +1,38 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <title>データ一覧</title>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='base-style.css') }}"
-    />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  </head>
 
-  <body>
-    <h1>トップページ</h1>
-    <ul>
-      <li><a href="{{ url_for('user.list') }}">ユーザーリスト</a></li>
-      <!-- <li><a href="{{ url_for('product.list') }}">製品リスト</a></li>
+<head>
+  <meta charset="UTF-8" />
+  <title>データ一覧</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='base-style.css') }}" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <h1>トップページ</h1>
+  <ul>
+    <li><a href="{{ url_for('user.list') }}">ユーザーリスト</a></li>
+    <!-- <li><a href="{{ url_for('product.list') }}">製品リスト</a></li>
     <li><a href="{{ url_for('order.list') }}">注文リスト</a></li> -->
-      <li><a href="{{ url_for('task.list') }}">業務記録リスト</a></li>
-      <li><a href="{{ url_for('physical.list') }}">体調管理アンケート</a></li>
-    </ul>
-    
-    <div class="graphs-wrapper">
-      <!-- 年齢円グラフ -->
-      <div class="graph-container">
-        {% include 'age_test.html' %}
-      </div>
-      <!-- 業務別平均体温グラフ -->
-      <div class="graph-container">
-        {% include 'task_chart.html' %}
-      </div>
-    </div>
-    <div class="graph-container match-width">
-      <!-- 体温折れ線グラフ -->
-      
-    </div>
+    <li><a href="{{ url_for('task.list') }}">業務記録リスト</a></li>
+    <li><a href="{{ url_for('physical.list') }}">体調管理アンケート</a></li>
+  </ul>
 
-  </body>
+  <div class="graphs-wrapper">
+    <!-- 年齢円グラフ -->
+    <div class="graph-container">
+      {% include 'age_test.html' %}
+    </div>
+    <!-- 業務別平均体温グラフ -->
+    <div class="graph-container">
+      {% include 'task_chart.html' %}
+    </div>
+  </div>
+  <div class="graph-container match-width">
+    <!-- 体温折れ線グラフ -->
+    {% include 'temp_chart.html' %}
+  </div>
+
+</body>
+
 </html>
