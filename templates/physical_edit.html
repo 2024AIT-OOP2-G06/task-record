@@ -15,7 +15,7 @@
 
     <form action="{{ url_for('physical.edit', physical_id=physical.id) }}" method="post">
         <label>ユーザー: 
-            <select name="user_id" required>
+            <select name="user_id" id="userSelect" required>
                 {% for user in users %}
                     <option value="{{ user.id }}" {% if physical.user.id == user.id %}selected{% endif %}>{{ user.username }}</option>
                 {% endfor %}
@@ -23,9 +23,9 @@
         </label><br>
         <label>体温: <input type="text" step="0.1" name="temp" value="{{ physical.temp }}" required></label><br>
         <label>業務種: 
-            <select name="task_id" required>
+            <select name="task_id" id="taskSelect" required>
                 {% for task in tasks %}
-                    <option value="{{ task.id }}" {% if physical.task.id == task.id %}selected{% endif %}>{{ task.task_name }}</option>
+                    <option value="{{ task.id }}" data-user="{{ task.user.id }}" {% if physical.task.id == task.id %}selected{% endif %}>{{ task.task_name }}</option>
                 {% endfor %}
             </select>
         </label><br>
@@ -35,5 +35,37 @@
         <label>体調不良の内容: <input type="text" name="bad_content" value="{{ physical.bad_content }}"></label><br>
         <button type="submit">保存</button>
     </form>
+
+    <script>
+        // ユーザーのセレクトボックスと業務種のセレクトボックスを取得
+        const userSelect = document.getElementById('userSelect');
+        const taskSelect = document.getElementById('taskSelect');
+    
+        // ユーザーが選択されたときに実行
+        userSelect.addEventListener('change', function () {
+            const selectedUser = this.value; // 選択されたユーザーID
+    
+            // 業務種のオプションをフィルタリング
+            Array.from(taskSelect.options).forEach(option => {
+                // 選択されたユーザーに関連する業務のみ表示
+                if (option.getAttribute('data-user') === selectedUser) {
+                    option.style.display = 'block'; // 表示
+                } else {
+                    option.style.display = 'none'; // 非表示
+                }
+            });
+    
+            // 初期状態で最初に表示されている業務を選択
+            const visibleOption = Array.from(taskSelect.options).find(option => option.style.display === 'block');
+            if (visibleOption) {
+                taskSelect.value = visibleOption.value; // 最初の表示された業務を選択
+            } else {
+                taskSelect.value = ''; // 選択をクリア
+            }
+        });
+    
+        // ページ読み込み時に初期状態を設定
+        userSelect.dispatchEvent(new Event('change'));
+    </script>
 </body>
 </html>

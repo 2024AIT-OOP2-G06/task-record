@@ -1,22 +1,29 @@
-<h3>体温グラフ</h3>
-<!-- ユーザーを選択 -->
-<form action="{{ url_for('physical.show_chart') }}" method="post">
-    <label>ユーザー:
-        <select name="user_id" required>
-            {% for user in users %}
-            <option value="{{ user.id }}" {% if user.username==username %}selected{% endif %}>
-                {{ user.username }}
-            </option>
-            {% endfor %}
-        </select>
-    </label>
-    <button type="submit">グラフを表示</button>
-</form>
+<body>
+    <h3>ユーザー別体温グラフ</h3>
+    <ul class="breadcrumb">
+        <li><a href="{{ url_for('index') }}">HOME</a></li>
+        <li><a href="{{ url_for('physical.list') }}">アンケート一覧</a></li>
+    </ul>
+    <!-- ユーザーを選択 -->
+    <form action="{{ url_for('physical.show_chart') }}" method="post">
+        <label>ユーザー:
+            <select name="user_id" required>
+                {% for user in users %}
+                <option value="{{ user.id }}" {% if user.username==username %}selected{% endif %}>
+                    {{ user.username }}
+                </option>
+                {% endfor %}
+            </select>
+        </label>
+        <button type="submit">グラフを表示</button>
+    </form>
 
 <canvas id="tempChart" height="200" width="400"></canvas>
+</body>
 <script>
     // サーバー側から渡された username を JavaScript で利用可能にする
     const username = "{{ username|default(users[0].username, true) }}"; // 初期ユーザーが指定されている場合はそのユーザー名を使用
+
 
     // APIからデータを取得してグラフを作成
     fetch(`/physicals/temp_chart_data?user_id=${encodeURIComponent(username)}`)

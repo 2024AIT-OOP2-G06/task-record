@@ -48,7 +48,7 @@ h3 {
   padding: 20px; /* 内側の余白 */
   margin-top: 15px; /* 外側の余白 */
   box-sizing: border-box;
-  width: 500px; /* 固定幅の設定 */
+  width: 550px; /* 固定幅の設定 */
 }
 
 .graphs-wrapper {
@@ -58,7 +58,7 @@ h3 {
 }
 
 .match-width {
-  width: calc(500px * 2 + 15px); /* 2つのグラフの横幅の合計 */
+  width: calc(550px * 2 + 15px); /* 2つのグラフの横幅の合計 */
   display: flex;
   flex-direction: column; /* 縦方向に配置 */
 }
