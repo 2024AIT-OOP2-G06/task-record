@@ -1,4 +1,4 @@
-    <h3>業種別平均体温グラフ</h3>
+    <h3>業務種別平均体温グラフ</h3>
     <canvas id="averageTempChart" height="200" width="250"></canvas>
     <script>
         // APIからデータを取得して棒グラフを描画
@@ -16,7 +16,7 @@
                     data: {
                         labels: labels, // X軸ラベル
                         datasets: [{
-                            label: '業務別平均体温 (℃)',
+                            label: '業務種別平均体温 (℃)',
                             data: values, // 平均体温の値
                             barThickness: 30, // 棒の太さを固定 (単位: ピクセル)
                             backgroundColor: 'rgba(0, 128, 255, 0.5)',
