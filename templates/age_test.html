@@ -1,37 +1,42 @@
-    <h3>年齢の円グラフ</h3>
-    <div>
-      <canvas id="myChart"></canvas>
-    </div>
-    <script>
-      // JSONファイルを読み込む
-      fetch("{{url_for('static',filename='age.json')}}") // Pythonで生成したJSONファイルのパス
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("JSONファイルの読み込みに失敗しました");
-          }
-          return response.json(); // JSONデータを解析
-        })
-        .then((ages) => {
-          // ラベルを生成
-          const labels = ages.map((age, index) => `Age ${age}`);
-          console.log(labels);
-          // Chart.jsで円グラフを描画
-          const ctx = document.getElementById("myChart");
-          new Chart(ctx, {
-            type: "pie", // 円グラフ
-            data: {
-              labels: labels, // 加工したラベル
-              datasets: [
-                {
-                  data: ages, // 元のデータをそのまま使用
-                  borderWidth: 1,
-                },
-              ],
+<h3>年齢の円グラフ</h3>
+<div>
+  <canvas id="myChart"></canvas>
+</div>
+<script>
+  // JSONファイルを読み込む
+  fetch("{{url_for('static',filename='age.json')}}") // Pythonで生成したJSONファイルのパス
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("JSONファイルの読み込みに失敗しました");
+      }
+      return response.json(); // JSONデータを解析
+    })
+    .then((ages) => {
+      // ラベルを生成 (年齢ごとのラベル)
+      const labels = Object.keys(ages); // 年齢をラベルとして取得
+      console.log("Labels:", labels);
+
+      // データ（人数）を生成
+      const data = Object.values(ages); // 年齢ごとの人数を取得
+      console.log("Data:", data);
+
+      // Chart.jsで円グラフを描画
+      const ctx = document.getElementById("myChart");
+      new Chart(ctx, {
+        type: "pie", // 円グラフ
+        data: {
+          labels: labels, // 加工したラベル
+          datasets: [
+            {
+              data: data, // 元のデータをそのまま使用
+              borderWidth: 1,
             },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-            }
-          });
-        });
-    </script>
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+        },
+      });
+    });
+</script>
